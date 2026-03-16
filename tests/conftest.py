@@ -1,23 +1,23 @@
 import pytest
 import mongomock
-import unittest.mock
 from unittest.mock import patch
 
-unittest.mock.patch("pymongo.MongoClient", mongomock.MongoClient).start()
-
-from app import app as flask_app
-from database.databaseConfig import db
-
+@pytest.fixture(scope='session', autouse=True)
+def mock_mongo_client_session():
+    with patch('pymongo.MongoClient', mongomock.MongoClient):
+        yield
 
 @pytest.fixture(autouse=True)
-def mock_db():
+def mock_db(mock_mongo_client_session):
+    from database.databaseConfig import db
     # Clear all collections
     for collection in db.list_collection_names():
         db.drop_collection(collection)
     yield db
 
 @pytest.fixture
-def app():
+def app(mock_mongo_client_session):
+    from app import app as flask_app
     flask_app.config.update({
         "TESTING": True,
         "SECRET_KEY": "beehive",
