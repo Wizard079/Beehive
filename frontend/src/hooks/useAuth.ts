@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { jwtDecode } from "jwt-decode";
 
 interface JwtPayload {
   sub: string;
@@ -27,7 +28,7 @@ function decodeToken(): User | null {
   if (!token) return null;
 
   try {
-    const payload = JSON.parse(atob(token.split(".")[1])) as JwtPayload;
+    const payload = jwtDecode<JwtPayload>(token);
 
     return {
       id: payload.sub,

@@ -16,6 +16,7 @@ import {
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import { apiUrl } from "../utils/api";
 import useObjectUrl from "../hooks/useObjectUrl";
 import Webcam from "../components/Webcam";
@@ -31,6 +32,10 @@ const allowedFileTypes = [
 ];
 
 type SentimentType = 'positive' | 'neutral' | 'negative' | 'custom';
+
+interface JwtPayload {
+  exp?: number;
+}
 
 const Upload = () => {
   const tokenFromStorage = getToken();
@@ -401,7 +406,7 @@ const Upload = () => {
         return;
       }
       try {
-        const payload = JSON.parse(atob(rawToken.split(".")[1]));
+        const payload = jwtDecode<JwtPayload>(rawToken);
         if (payload.exp && payload.exp * 1000 <= Date.now()) {
           toast.error('Session expired. Redirecting to landing...');
           logout();
