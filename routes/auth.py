@@ -200,7 +200,8 @@ def complete_signup():
         "username": username,
         "password": hashed_password,
         "role": role,
-        "created_at": datetime.now(timezone.utc)
+        "created_at": datetime.now(timezone.utc),
+        "last_active": datetime.now(timezone.utc)
     })
 
     token = create_access_token(
@@ -292,7 +293,8 @@ def set_password():
             "username": email.split("@")[0],
             "password": hashed,
             "role": role,
-            "created_at": datetime.now(timezone.utc)
+            "created_at": datetime.now(timezone.utc),
+            "last_active": datetime.now(timezone.utc)
         }).inserted_id
 
         # Cleanup OTPs
@@ -376,7 +378,8 @@ def google_auth():
             "role": role,
             "provider": "google",
             "google_id": sub,
-            "created_at": datetime.now(timezone.utc)
+            "created_at": datetime.now(timezone.utc),
+            "last_active": datetime.now(timezone.utc)
         })
         user_id = str(result.inserted_id)
     else:
