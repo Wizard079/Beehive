@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback} from 'react';
 import { apiUrl } from '../utils/api';
 
 interface ChatDrawerProps {
@@ -117,7 +117,7 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({ userId, userRole, targetUserId,
         
         {/* Header */}
         <div 
-          className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-slate-800 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800/50 rounded-t-xl"
+          className="flex items-center justify-between px-4 py-3 border-b border-yellow-500 dark:border-slate-800 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800/50 rounded-t-xl"
           onClick={() => setIsMinimized(!isMinimized)}
         >
           <div className="flex items-center gap-2 truncate">
@@ -143,12 +143,12 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({ userId, userRole, targetUserId,
           <div className="flex flex-1 overflow-hidden">
             {/* Improved Admin Sidebar */}
             {userRole === 'admin' && (
-              <div className="w-40 border-r border-gray-100 dark:border-slate-800 flex flex-col bg-gray-50/50 dark:bg-slate-950/50">
+              <div className="w-40 border-r border-yellow-500 dark:border-slate-800 flex flex-col bg-gray-50/50 dark:bg-slate-950/50">
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
                   {userList.map((user) => (
                     <div
                       key={user.id}
-                      className={`cursor-pointer px-3 py-3 border-b border-gray-100 dark:border-slate-800 transition-colors
+                      className={`cursor-pointer px-3 py-3 border-b border-yellow-500 dark:border-slate-800 transition-colors
                         ${selectedUser?.id === user.id 
                           ? 'bg-yellow-400 text-black font-bold' 
                           : 'hover:bg-gray-200/50 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300 font-medium'}`}
@@ -188,7 +188,7 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({ userId, userRole, targetUserId,
               </div>
 
               {/* Input Bar */}
-              <div className="p-3 border-t border-gray-100 dark:border-slate-800">
+              <div className="p-3 border-t border-yellow-500 dark:border-slate-800">
                 <div className="relative flex items-center">
                   <input
                     type="text"
