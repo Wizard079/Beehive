@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { apiUrl } from '../../utils/api';
-import { getToken } from '../../utils/auth';
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { apiUrl } from "../../utils/api";
+import { getToken } from "../../utils/auth";
 import {
   PhotoIcon,
   ChartBarIcon,
   MicrophoneIcon,
-} from '@heroicons/react/24/outline';
+} from "@heroicons/react/24/outline";
 
 // Types for the dashboard data
 interface DashboardStats {
@@ -60,15 +60,19 @@ const StatCard = ({
 );
 
 const Dashboard = () => {
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // sorting / filtering state
-  const [sortOption, setSortOption] = useState<'date_desc'|'date_asc'|'user_asc'|'user_desc'>('date_desc');
-  const [filterUser, setFilterUser] = useState('');
-  const [filterFromDate, setFilterFromDate] = useState('');
-  const [filterToDate, setFilterToDate] = useState('');
+  const [sortOption, setSortOption] = useState<
+    "date_desc" | "date_asc" | "user_asc" | "user_desc"
+  >("date_desc");
+  const [filterUser, setFilterUser] = useState("");
+  const [filterFromDate, setFilterFromDate] = useState("");
+  const [filterToDate, setFilterToDate] = useState("");
   // pagination state
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -77,40 +81,50 @@ const Dashboard = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const userParam = params.get('user');
+    const userParam = params.get("user");
     if (userParam) {
       setFilterUser(userParam);
     }
     fetchDashboardData();
-  }, [location.search, sortOption, filterFromDate, filterToDate, filterUser, page]);
+  }, [
+    location.search,
+    sortOption,
+    filterFromDate,
+    filterToDate,
+    filterUser,
+    page,
+  ]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const token = getToken();
 
       const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       };
       if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
+        headers["Authorization"] = `Bearer ${token}`;
       }
-      
-      const qp = new URLSearchParams();
-      qp.set('limit', String(limit));
-      qp.set('page', String(page));
-      if (filterUser) qp.set('user', filterUser);
-      if (filterFromDate) qp.set('from', filterFromDate);
-      if (filterToDate) qp.set('to', filterToDate);
-      if (sortOption) qp.set('sort', sortOption);
 
-      const response = await fetch(apiUrl(`/api/admin/dashboard?${qp.toString()}`), {
-        method: 'GET',
-        headers,
-        credentials: 'include',
-      });
+      const qp = new URLSearchParams();
+      qp.set("limit", String(limit));
+      qp.set("page", String(page));
+      if (filterUser) qp.set("user", filterUser);
+      if (filterFromDate) qp.set("from", filterFromDate);
+      if (filterToDate) qp.set("to", filterToDate);
+      if (sortOption) qp.set("sort", sortOption);
+
+      const response = await fetch(
+        apiUrl(`/api/admin/dashboard?${qp.toString()}`),
+        {
+          method: "GET",
+          headers,
+          credentials: "include",
+        },
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -119,8 +133,10 @@ const Dashboard = () => {
       const data = await response.json();
       setDashboardData(data);
     } catch (err) {
-      console.error('Error fetching dashboard data:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch dashboard data');
+      console.error("Error fetching dashboard data:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch dashboard data",
+      );
     } finally {
       setLoading(false);
     }
@@ -212,7 +228,9 @@ const Dashboard = () => {
         {/* Recent Activity */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md transition-colors duration-200">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4 dark:text-white">Recent Activity</h2>
+            <h2 className="text-xl font-semibold mb-4 dark:text-white">
+              Recent Activity
+            </h2>
 
             {/* filter and sort controls */}
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
@@ -221,32 +239,52 @@ const Dashboard = () => {
                   type="text"
                   placeholder="Filter by user"
                   value={filterUser}
-                  onChange={(e) => setFilterUser(e.target.value)}
+                  onChange={(e) => {
+                    setFilterUser(e.target.value);
+                    setPage(1);
+                  }}
                   className="px-3 py-2 border rounded-md text-sm w-40 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400"
                 />
                 <label className="text-sm dark:text-gray-200">From:</label>
                 <input
                   type="date"
                   value={filterFromDate}
-                  onChange={(e) => setFilterFromDate(e.target.value)}
+                  onChange={(e) => {
+                    setFilterFromDate(e.target.value);
+                    setPage(1);
+                  }}
                   className="px-3 py-2 border rounded-md text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                 />
                 <label className="text-sm dark:text-gray-200">To:</label>
                 <input
                   type="date"
                   value={filterToDate}
-                  onChange={(e) => setFilterToDate(e.target.value)}
+                  onChange={(e) => {
+                    setFilterToDate(e.target.value);
+                    setPage(1);
+                  }}
                   className="px-3 py-2 border rounded-md text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                 />
               </div>
               <div className="flex items-center space-x-2">
-                <label htmlFor="sort" className="text-sm font-medium dark:text-gray-200">
+                <label
+                  htmlFor="sort"
+                  className="text-sm font-medium dark:text-gray-200"
+                >
                   Sort by:
                 </label>
                 <select
                   id="sort"
                   value={sortOption}
-                  onChange={(e) => setSortOption(e.target.value as 'date_desc'|'date_asc'|'user_asc'|'user_desc')}
+                  onChange={(e) =>
+                    setSortOption(
+                      e.target.value as
+                        | "date_desc"
+                        | "date_asc"
+                        | "user_asc"
+                        | "user_desc",
+                    )
+                  }
                   className="px-3 py-2 border rounded-md text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                 >
                   <option value="date_desc">Date (newest)</option>
@@ -258,15 +296,24 @@ const Dashboard = () => {
             </div>
 
             {displayedUploads.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">No recent activity</p>
+              <p className="text-gray-500 text-center py-8">
+                No recent activity
+              </p>
             ) : (
               <div className="overflow-x-auto">
+              
                 <table className="min-w-full">
                   <thead>
                     <tr className="border-b border-gray-200 dark:border-gray-700">
-                      <th className="text-left py-3 px-4 font-medium text-gray-600 dark:text-gray-400">Title</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600 dark:text-gray-400">User</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600 dark:text-gray-400">Timestamp</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600 dark:text-gray-400">
+                        Title
+                      </th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600 dark:text-gray-400">
+                        User
+                      </th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600 dark:text-gray-400">
+                        Timestamp
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -275,8 +322,12 @@ const Dashboard = () => {
                         key={upload.id}
                         className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                       >
-                        <td className="py-3 px-4 dark:text-gray-200">{upload.title}</td>
-                        <td className="py-3 px-4 dark:text-gray-200">{upload.user}</td>
+                        <td className="py-3 px-4 dark:text-gray-200">
+                          {upload.title}
+                        </td>
+                        <td className="py-3 px-4 dark:text-gray-200">
+                          {upload.user}
+                        </td>
                         <td className="py-3 px-4 dark:text-gray-200">
                           {new Date(upload.timestamp).toLocaleString()}
                         </td>
@@ -297,9 +348,7 @@ const Dashboard = () => {
                 Previous
               </button>
 
-              <span className="text-sm">
-                Page {page}
-              </span>
+              <span className="text-sm">Page {page}</span>
 
               <button
                 onClick={() => setPage((prev) => prev + 1)}
@@ -309,7 +358,6 @@ const Dashboard = () => {
                 Next
               </button>
             </div>
-
           </div>
         </div>
       </div>
