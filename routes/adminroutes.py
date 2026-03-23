@@ -48,7 +48,16 @@ def admin_user_images_show(user_id):
 def get_dashboard_data():
     try:
         user = sanitize_api_query(request.args.get("user"))
-        page, limit = parse_pagination_params(default_page=1, default_size=10, max_size=50)
+
+        try:
+            page = int(request.args.get("page", "1"))
+            limit = int(request.args.get("limit", "10"))
+        except (ValueError, TypeError):
+            return jsonify({"error": "Invalid pagination parameters. 'page' and 'limit' must be integers."}), 400
+
+        page = max(1, page)
+        limit = min(max(1, limit), 50)
+
         from_date = None
         end_date = None
         from_date_str = request.args.get("from")
