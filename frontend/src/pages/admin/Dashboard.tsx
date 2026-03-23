@@ -65,12 +65,10 @@ const Dashboard = () => {
   const [error, setError] = useState<string | null>(null);
 
   // sorting / filtering state
-  const [sortOption, setSortOption] = useState<
-    "date_desc" | "date_asc" | "user_asc" | "user_desc"
-  >("date_desc");
-  const [filterUser, setFilterUser] = useState("");
-  const [filterFromDate, setFilterFromDate] = useState("");
-  const [filterToDate, setFilterToDate] = useState("");
+  const [sortOption, setSortOption] = useState<'date_desc'|'date_asc'|'user_asc'|'user_desc'>('date_desc');
+  const [filterUser, setFilterUser] = useState('');
+  const [filterFromDate, setFilterFromDate] = useState('');
+  const [filterToDate, setFilterToDate] = useState('');
   // pagination state
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -78,30 +76,24 @@ const Dashboard = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // if user filter provided in query string, pre-populate
     const params = new URLSearchParams(location.search);
     const userParam = params.get('user');
     if (userParam) {
       setFilterUser(userParam);
     }
     fetchDashboardData();
-  }, [
-    location.search,
-    sortOption,
-    filterFromDate,
-    filterToDate,
-    filterUser,
-    page,
-  ]);
+  }, [location.search,sortOption,filterFromDate,filterToDate,filterUser,page,]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
       setError(null);
-
+      // Get the JWT token from helper
       const token = getToken();
 
       const headers: Record<string, string> = {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       };
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
@@ -319,7 +311,9 @@ const Dashboard = () => {
                       >
                         <td className="py-3 px-4 dark:text-gray-200">{upload.title}</td>
                         <td className="py-3 px-4 dark:text-gray-200">{upload.user}</td>
-                        <td className="py-3 px-4 dark:text-gray-200">{new Date(upload.timestamp).toLocaleString()}</td>
+                        <td className="py-3 px-4 dark:text-gray-200">
+                          {new Date(upload.timestamp).toLocaleString()}
+                          </td>
                       </tr>
                     ))}
                   </tbody>
